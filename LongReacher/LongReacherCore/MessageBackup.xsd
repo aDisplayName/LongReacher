@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="mmsBackup"
+    elementFormDefault="qualified"
+    xmlns:mstns="MessageBackup"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+    <xs:element name="ArrayOfMessage">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Message" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:all>
+                            <xs:element name="Recepients">
+                                <xs:complexType>
+                                    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                                        <xs:element name="string" type="xs:string"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="Body" type="xs:string"/>
+                            <xs:element name="IsIncoming" type="xs:boolean"/>
+                            <xs:element name="IsRead" type="xs:boolean"/>
+                            <xs:element name="Attachments">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="MessageAttachment" minOccurs="0" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:all>
+                                                    <xs:element name="AttachmentContentType" type="xs:string"/>
+                                                    <xs:element name="AttachmentDataBase64String" type="xs:base64Binary"/>
+                                                </xs:all>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="LocalTimestamp" type="xs:string"/>
+                            <xs:element name="Sender" type="xs:string"/>
+                        </xs:all>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
