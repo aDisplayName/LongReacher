@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace aDisplayName.LongReacher.Core
 {
-    public class Class1
+    public class Contact
     {
+        public string PrimerContactNumber { get; set; }
     }
 }
