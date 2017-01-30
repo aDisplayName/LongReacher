@@ -2,11 +2,7 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/LongReacher/LongReacherCore/obj/Debug
-/LongReacher/LongReacherCore/bin/Debug
-/LongReacher/LongReacher.Core.Test/obj/x86/Debug
-/LongReacher/LongReacher.Core.Test/bin/x86/Debug
-/LongReacher/.vs
-/LongReacher/LongReacher.Viewer/bin/x86/Debug
-/LongReacher/LongReacher.Viewer/obj/x86/Debug
-/TestMMS.msg
+**/obj/
+**/bin/**/Debug/
+**/bin/**/Release/
+**/.vs/
