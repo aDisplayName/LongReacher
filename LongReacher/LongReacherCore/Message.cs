@@ -14,50 +14,68 @@ namespace aDisplayName.LongReacher.Core
             Incoming = true;
             Recipients = new Recipients();
         }
+
+        public Message(MB_Message messageRecord):this()
+        {
+            if (messageRecord == null)
+                return;
+            Sender = messageRecord.Sender;
+            Incoming = messageRecord.IsIncoming;
+            try
+            {
+                LocalTimestamp = long.Parse(messageRecord.LocalTimestamp);
+            }
+            finally
+            {
+
+            }
+            Body = messageRecord.Body;
+            if(messageRecord.Recepients!=null)
+            {
+                foreach (var recipient in messageRecord.Recepients.@string)
+                {
+                    Recipients.AddRecipient(recipient);
+                }
+            }
+
+            if (messageRecord.Attachments != null)
+            {
+                foreach (var attachment in messageRecord.Attachments)
+                {
+                    Attachments.Add(new MessageAttachment(attachment));
+                }
+            }
+        }
         public long LocalTimestamp { get; set; }
         public string Sender { get; set; }
         public bool Incoming { get; set; }
         public Recipients Recipients { get; }
         public string Body { get; set; }
-        public override bool Equals(object obj)
+        public MessageAttachments Attachments;
+        public bool IsSameMessage(Message another)
         {
-            if (obj == null)
+            if (another == null)
                 return false;
+            return LocalTimestamp.Equals(another.LocalTimestamp);
+        }
 
-            var typedObj = obj as Message;
-            if (typedObj == null)
-                return false;
+        public void MergeIfSame(Message another)
+        {
+            if (!IsSameMessage(another))
+                return;
 
-            if (typedObj.LocalTimestamp != LocalTimestamp)
-                return false;
-            if (!typedObj.Sender.Equals(Sender))
-                return false;
-            if (typedObj.Incoming != Incoming)
-                return false;
-            if (!typedObj.Body.Equals(Body))
-                return false;
-
-            return true;
+            // Only recipient will be merged. We assume the rest information are the same.
+            if (another.Recipients == null)
+                return;
+            foreach (var recipient in another.Recipients)
+            {
+                Recipients.AddRecipient(recipient);
+            }
         }
     }
 
     public class MessageAttachments: List<MessageAttachment>
     {
-        public override bool Equals(object obj)
-        {
-            var k = obj as MessageAttachments;
-            if (k == null)
-                return false;
-
-            if (k.Count != Count)
-                return false;
-            for(var i=0;i<Count;i++)
-            {
-                if (!this[i].Equals(k[i]))
-                    return false;
-            }
-            return true;
-        }
     }
 
     public class MessageAttachment
@@ -65,22 +83,19 @@ namespace aDisplayName.LongReacher.Core
         public MessageAttachment()
         {
             MessageAttachmentType = string.Empty;
-            MessageAttachmentInBASE64 = string.Empty;
+            MessageAttachmentBytes = null;
         }
-        public string MessageAttachmentType { get; set; }
-        public string MessageAttachmentInBASE64 { get; set; }
 
-        public override bool Equals(object obj)
+        public MessageAttachment(MB_Attachment rawAttachment):this()
         {
-            var k = obj as MessageAttachment;
-            if (k == null)
-                return false;
-            if (!MessageAttachmentType.Equals(k.MessageAttachmentType))
-                return false;
-            if (!MessageAttachmentInBASE64.Equals(k.MessageAttachmentInBASE64))
-                return false;
-            return true;
+            if(rawAttachment!=null)
+            {
+                MessageAttachmentType = rawAttachment.AttachmentContentType;
+                MessageAttachmentBytes = rawAttachment.AttachmentDataBase64String.Clone() as byte[];
+            }
         }
+        public string MessageAttachmentType { get; private set; }
+        public byte[] MessageAttachmentBytes { get; private set; }
     }
     public class Recipients: List<string>
     {
